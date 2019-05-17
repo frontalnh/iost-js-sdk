@@ -1,0 +1,33 @@
+{
+  "name": "iost-js-sdk",
+  "version": "1.0.0",
+  "description": "### Run test node",
+  "main": "index.js",
+  "dependencies": {
+    "bs58": "^4.0.1",
+    "iost": "^0.1.13"
+  },
+  "devDependencies": {
+    "babel-jest": "^24.8.0",
+    "jest": "^24.8.0",
+    "ts-jest": "^24.0.2"
+  },
+  "scripts": {
+    "test": "jest --no-cache"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/frontalnh/iost-js-sdk.git"
+  },
+  "keywords": [
+    "iost-sdk",
+    "iost",
+    "iost-js-sdk"
+  ],
+  "author": "namhoon lee",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/frontalnh/iost-js-sdk/issues"
+  },
+  "homepage": "https://github.com/frontalnh/iost-js-sdk#readme"
+}

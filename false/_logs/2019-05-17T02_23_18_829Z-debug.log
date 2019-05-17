@@ -1,0 +1,38 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/local/Cellar/node/11.13.0/bin/node',
+1 verbose cli   '/usr/local/bin/npm',
+1 verbose cli   'run',
+1 verbose cli   'test',
+1 verbose cli   '--no-cache' ]
+2 info using npm@6.9.0
+3 info using node@v11.13.0
+4 verbose run-script [ 'pretest', 'test', 'posttest' ]
+5 info lifecycle iost-js-sdk@1.0.0~pretest: iost-js-sdk@1.0.0
+6 info lifecycle iost-js-sdk@1.0.0~test: iost-js-sdk@1.0.0
+7 verbose lifecycle iost-js-sdk@1.0.0~test: unsafe-perm in lifecycle true
+8 verbose lifecycle iost-js-sdk@1.0.0~test: PATH: /usr/local/lib/node_modules/npm/node_modules/npm-lifecycle/node-gyp-bin:/Users/namhoonlee/Desktop/git/iost-js-sdk/node_modules/.bin:/usr/local/go/bin:/usr/bin:/Library/Frameworks/Python.framework/Versions/3.7/lib/python/site-packages:/Library/Frameworks/Python.framework/Versions/3.7/bin:/Users/namhoonlee/bin:/Users/namhoonlee/Desktop/git/ddd-api-generator/bin:/Library/Frameworks/Python.framework/Versions/3.7/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/go/bin:/Library/Frameworks/Python.framework/Versions/3.7/lib/python/site-packages:/Library/Frameworks/Python.framework/Versions/3.7/bin:/Users/namhoonlee/bin:/Users/namhoonlee/Desktop/git/ddd-api-generator/bin:/usr/local/opt/fzf/bin
+9 verbose lifecycle iost-js-sdk@1.0.0~test: CWD: /Users/namhoonlee/Desktop/git/iost-js-sdk
+10 silly lifecycle iost-js-sdk@1.0.0~test: Args: [ '-c', 'jest' ]
+11 silly lifecycle iost-js-sdk@1.0.0~test: Returned: code: 1  signal: null
+12 info lifecycle iost-js-sdk@1.0.0~test: Failed to exec test script
+13 verbose stack Error: iost-js-sdk@1.0.0 test: `jest`
+13 verbose stack Exit status 1
+13 verbose stack     at EventEmitter.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/npm-lifecycle/index.js:301:16)
+13 verbose stack     at EventEmitter.emit (events.js:193:13)
+13 verbose stack     at ChildProcess.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/npm-lifecycle/lib/spawn.js:55:14)
+13 verbose stack     at ChildProcess.emit (events.js:193:13)
+13 verbose stack     at maybeClose (internal/child_process.js:1001:16)
+13 verbose stack     at Process.ChildProcess._handle.onexit (internal/child_process.js:266:5)
+14 verbose pkgid iost-js-sdk@1.0.0
+15 verbose cwd /Users/namhoonlee/Desktop/git/iost-js-sdk
+16 verbose Darwin 18.5.0
+17 verbose argv "/usr/local/Cellar/node/11.13.0/bin/node" "/usr/local/bin/npm" "run" "test" "--no-cache"
+18 verbose node v11.13.0
+19 verbose npm  v6.9.0
+20 error code ELIFECYCLE
+21 error errno 1
+22 error iost-js-sdk@1.0.0 test: `jest`
+22 error Exit status 1
+23 error Failed at the iost-js-sdk@1.0.0 test script.
+23 error This is probably not a problem with npm. There is likely additional logging output above.
+24 verbose exit [ 1, true ]
