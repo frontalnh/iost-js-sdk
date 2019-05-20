@@ -108,17 +108,8 @@ class IOSTHelper {
   }
 
   async sendTx(tx) {
-    // tx.setTime(90, 0, 0);
     tx.setChainID(chainId);
 
-    // return new Promise((resolve, reject) => {
-    //   this.rpc.transaction
-    //     .sendTx(tx)
-    //     .then(({ hash }) => {
-    //       resolve(hash);
-    //     })
-    //     .catch(err => reject(err));
-    // });
     const { hash } = await this.rpc.transaction.sendTx(tx);
 
     return hash;
@@ -173,6 +164,15 @@ class IOSTHelper {
 
   async getTxByHash(hash) {
     return this.rpc.transaction.getTxByHash(hash);
+  }
+
+  async getTransferDataByHash(hash) {
+    const { transaction } = await this.getTxByHash(hash);
+    const data = JSON.parse(transaction.actions[0].data).slice(1);
+
+    const [fromUserId, toUserId, amount, memo] = data;
+
+    return { fromUserId, toUserId, amount: +amount, memo };
   }
 }
 

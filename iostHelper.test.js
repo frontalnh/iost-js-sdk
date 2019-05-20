@@ -59,7 +59,7 @@ describe('[IostHelper]', () => {
     expect(hash).toBeDefined();
   });
 
-  it('get block by num and get tx by hash', async () => {
+  it.only('get block by num and get tx by hash', async () => {
     const userId = genRandomString(10);
     const userTx = iostHelper.makeCreateAccountTx(userId, 200, 200);
     iostHelper.sign(userTx);
@@ -75,9 +75,14 @@ describe('[IostHelper]', () => {
 
     const transaction = await iostHelper.getTxByHash(block.transactions[1].hash);
 
-    const memos = JSON.parse(transaction.transaction.actions[0].data);
+    const transferData = await iostHelper.getTransferDataByHash(block.transactions[1].hash);
 
-    expect(memos.filter(v => v === 'test transfer').length).toBe(1);
+    expect(transferData).toMatchObject({
+      fromUserId: 'admin',
+      toUserId: userId,
+      amount: 1000,
+      memo: 'test transfer'
+    });
 
     expect(transaction.block_number).toBe(blockNumber);
   });
