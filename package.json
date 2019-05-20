@@ -5,7 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "bs58": "^4.0.1",
-    "iost": "^0.1.13"
+    "iost": "iost-official/iost.js#d13eda5"
   },
   "devDependencies": {
     "babel-jest": "^24.8.0",

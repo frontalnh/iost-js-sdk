@@ -58,6 +58,8 @@ class IOSTHelper {
       initialGasPledge
     );
 
+    tx.setTime(90, 0, 0);
+
     return tx;
   }
 
@@ -89,6 +91,7 @@ class IOSTHelper {
 
   makeTransferTx(from, to, amount, memo) {
     const tx = this.iost.callABI('token.iost', 'transfer', ['iost', from, to, amount, memo]);
+    tx.setTime(90, 0, 0);
 
     return tx;
   }
@@ -107,6 +110,15 @@ class IOSTHelper {
   async sendTx(tx) {
     // tx.setTime(90, 0, 0);
     tx.setChainID(chainId);
+
+    // return new Promise((resolve, reject) => {
+    //   this.rpc.transaction
+    //     .sendTx(tx)
+    //     .then(({ hash }) => {
+    //       resolve(hash);
+    //     })
+    //     .catch(err => reject(err));
+    // });
     const { hash } = await this.rpc.transaction.sendTx(tx);
 
     return hash;

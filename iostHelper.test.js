@@ -54,11 +54,12 @@ describe('[IostHelper]', () => {
 
     expect(tx.publisher_sigs.length).toBe(1);
 
+    console.log(tx);
     const hash = await iostHelper.sendTx(tx);
     expect(hash).toBeDefined();
   });
 
-  it.only('get block by num and get tx by hash', async () => {
+  it('get block by num and get tx by hash', async () => {
     const userId = genRandomString(10);
     const userTx = iostHelper.makeCreateAccountTx(userId, 200, 200);
     iostHelper.sign(userTx);
