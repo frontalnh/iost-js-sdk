@@ -20,6 +20,19 @@ const delay = sec =>
   });
 
 describe('[IostHelper]', () => {
+  const USER1_ID = genRandomString(8);
+  const USER2_ID = genRandomString(8);
+
+  beforeAll(async () => {
+    const user1Tx = await iostHelper.makeCreateAccountTx(USER1_ID, 200, 200);
+    const user2Tx = await iostHelper.makeCreateAccountTx(USER2_ID, 200, 200);
+
+    iostHelper.sign(user1Tx);
+    iostHelper.sign(user2Tx);
+
+    await iostHelper.handle(user1Tx);
+    await iostHelper.handle(user2Tx);
+  });
   it('make create account tx', async () => {
     iostHelper.makeCreateAccountTx('user1', 200, 200);
   });
@@ -30,7 +43,6 @@ describe('[IostHelper]', () => {
 
     iostHelper.sign(tx);
 
-    console.log('TX: ', tx);
     // const hash = await iostHelper.sendTx(tx);
     // expect(hash).toBeDefined();
     // console.log(hash);
@@ -54,12 +66,11 @@ describe('[IostHelper]', () => {
 
     expect(tx.publisher_sigs.length).toBe(1);
 
-    console.log(tx);
     const hash = await iostHelper.sendTx(tx);
     expect(hash).toBeDefined();
   });
 
-  it.only('get block by num and get tx by hash', async () => {
+  it('get block by num and get tx by hash', async () => {
     const userId = genRandomString(10);
     const userTx = iostHelper.makeCreateAccountTx(userId, 200, 200);
     iostHelper.sign(userTx);
@@ -71,11 +82,11 @@ describe('[IostHelper]', () => {
 
     const { block_number: blockNumber } = await iostHelper.getTxByHash(transferHash);
 
-    const { status, block } = await iostHelper.getBlockByNum(blockNumber);
+    const { status, transactions } = await iostHelper.getBlockByNum(blockNumber);
 
-    const transaction = await iostHelper.getTxByHash(block.transactions[1].hash);
+    const transaction = await iostHelper.getTxByHash(transactions[1].hash);
 
-    const transferData = await iostHelper.getTransferDataByHash(block.transactions[1].hash);
+    const transferData = await iostHelper.getTransferDataByHash(transactions[1].hash);
 
     expect(transferData).toMatchObject({
       fromUserId: 'admin',
@@ -88,19 +99,8 @@ describe('[IostHelper]', () => {
   });
 
   it('transfer', async () => {
-    const user1Id = genRandomString(8);
-    const user2Id = genRandomString(8);
-    const user1Tx = await iostHelper.makeCreateAccountTx(user1Id, 200, 200);
-    const user2Tx = await iostHelper.makeCreateAccountTx(user2Id, 200, 200);
-
-    iostHelper.sign(user1Tx);
-    iostHelper.sign(user2Tx);
-
-    await iostHelper.handle(user1Tx);
-    await iostHelper.handle(user2Tx);
-
     const adminBefore = await iostHelper.getAccountInfo('admin');
-    const transferTx = iostHelper.makeTransferTx('admin', user1Id, '1000', 'hello');
+    const transferTx = iostHelper.makeTransferTx('admin', USER1_ID, '1000', 'hello');
 
     iostHelper.sign(transferTx);
     await iostHelper.handle(transferTx);
@@ -111,18 +111,18 @@ describe('[IostHelper]', () => {
   });
 
   it('add permission to account', async () => {
-    const keyPair = iostHelper.createKeyPair();
+    const secKey = await iostHelper.addPermToAccount('admin', 'general', 100, 100);
+    expect(secKey).toBeDefined();
 
-    const result = iostHelper.addPermToAccount('general', keyPair);
-    console.log(result);
+    const transferTx = iostHelper.makeTransferTx('admin', USER1_ID, '1000', 'hello');
 
-    const transferTx = iostHelper.makeTransferTx('admin', 'admin', '2000', 'hello');
     iostHelper.sign(transferTx);
     // iostHelper.signWithPerm(transferTx, 'general');
 
     await iostHelper.handle(transferTx);
 
     const accountInfo = await iostHelper.getAccountInfo('admin');
-    console.log(accountInfo);
+
+    expect(accountInfo.permissions).toMatchObject({ general: { name: 'general' } });
   });
 });

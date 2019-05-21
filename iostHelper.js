@@ -119,8 +119,10 @@ class IOSTHelper {
     return this.iost.currentAccount;
   }
 
-  getBlockByNum(blockNumber) {
-    return this.rpc.blockchain.getBlockByNum(blockNumber, true);
+  async getBlockByNum(blockNumber) {
+    const { status, block } = await this.rpc.blockchain.getBlockByNum(blockNumber, true);
+
+    return { status, transactions: block.transactions };
   }
 
   async getAccountInfo(userId) {
@@ -150,15 +152,37 @@ class IOSTHelper {
     });
   }
 
-  addPermToAccount(permission, keyPair) {
-    this.adminAccount.addKeyPair(keyPair, permission);
+  async addPermToAccount(userId, permission, threshold, weight) {
+    const keyPair = this.createKeyPair();
+    const addPermTx = this.iost.callABI('auth.iost', 'addPermission', [
+      userId,
+      permission,
+      threshold
+    ]);
+    addPermTx.setTime(90, 0, 0);
+    this.sign(addPermTx);
+
+    await this.sendTx(addPermTx);
+
+    const assignPermTx = this.iost.callABI('auth.iost', 'assignPermission', [
+      userId,
+      permission,
+      keyPair.B58PubKey(),
+      weight
+    ]);
+    assignPermTx.setTime(90, 0, 0);
+    this.sign(assignPermTx);
+
+    await this.sendTx(assignPermTx);
+
+    return keyPair.B58SecKey();
   }
 
   signWithPerm(tx, permission) {
-    tx.setChainID(1020);
+    // tx.setChainID(1020);
 
     // 어프루브 반드시 해야함!!!
-    tx.addApprove('iost', 1000);
+    // tx.addApprove('iost', 1000);
     this.adminAccount.sign(tx, permission);
   }
 
