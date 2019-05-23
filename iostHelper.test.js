@@ -1,4 +1,5 @@
-const { iostHelper } = require('./iostHelper');
+const IOSTHelper = require('./iostHelper');
+const iostHelper = new IOSTHelper('http://localhost:30001');
 jest.setTimeout(100000);
 
 const genRandomString = len => {
@@ -32,6 +33,11 @@ describe('[IostHelper]', () => {
 
     await iostHelper.handle(user1Tx);
     await iostHelper.handle(user2Tx);
+  });
+
+  it('get chain info', async () => {
+    const chainInfo = await iostHelper.getChainInfo();
+    console.log(chainInfo);
   });
   it('make create account tx', async () => {
     iostHelper.makeCreateAccountTx('user1', 200, 200);
@@ -70,7 +76,7 @@ describe('[IostHelper]', () => {
     expect(hash).toBeDefined();
   });
 
-  it('get block by num and get tx by hash', async () => {
+  it.only('get block by num and get tx by hash', async () => {
     const userId = genRandomString(10);
     const userTx = iostHelper.makeCreateAccountTx(userId, 200, 200);
     iostHelper.sign(userTx);
@@ -85,7 +91,7 @@ describe('[IostHelper]', () => {
     const { status, transactions } = await iostHelper.getBlockByNum(blockNumber);
 
     const transaction = await iostHelper.getTxByHash(transactions[1].hash);
-
+    console.log('Transaction: ', transaction);
     const transferData = await iostHelper.getTransferDataByHash(transactions[1].hash);
 
     expect(transferData).toMatchObject({
@@ -124,5 +130,17 @@ describe('[IostHelper]', () => {
     const accountInfo = await iostHelper.getAccountInfo('admin');
 
     expect(accountInfo.permissions).toMatchObject({ general: { name: 'general' } });
+  });
+
+  it('get block very fast', done => {
+    const tasks = [];
+    for (let i = 0; i < 300; i++) {
+      tasks.push(iostHelper.getBlockByNum(i));
+    }
+
+    Promise.all(tasks).then(v => {
+      console.log(v);
+      done();
+    });
   });
 });

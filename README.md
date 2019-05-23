@@ -5,7 +5,7 @@
 노드실행
 
 ```
-docker run --rm -p 30000-30003:30000-30003 iostio/iost-node
+docker run --rm -p 30000-30003:30000-30003 -d iostio/iost-node
 ```
 
 먼저 admin 유저를 import 한다.

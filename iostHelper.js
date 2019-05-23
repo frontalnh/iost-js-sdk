@@ -63,8 +63,10 @@ class IOSTHelper {
     return tx;
   }
 
-  getChainInfo() {
-    this.rpc.blockchain.getChainInfo().then(console.log);
+  async getChainInfo() {
+    const { head_block: headBlockNumber } = this.rpc.blockchain.getChainInfo();
+
+    return { headBlockNumber };
   }
 
   initAdminAccount(name, priKey) {
@@ -122,7 +124,7 @@ class IOSTHelper {
   async getBlockByNum(blockNumber) {
     const { status, block } = await this.rpc.blockchain.getBlockByNum(blockNumber, true);
 
-    return { status, transactions: block.transactions };
+    return { status, transactions: block.transactions, blockNumber: block.number };
   }
 
   async getAccountInfo(userId) {
@@ -191,15 +193,14 @@ class IOSTHelper {
   }
 
   async getTransferDataByHash(hash) {
-    const { transaction } = await this.getTxByHash(hash);
+    const { transaction, block_number: blockNumber } = await this.getTxByHash(hash);
+    console.log(transaction);
     const data = JSON.parse(transaction.actions[0].data).slice(1);
 
     const [fromUserId, toUserId, amount, memo] = data;
 
-    return { fromUserId, toUserId, amount: +amount, memo };
+    return { fromUserId, toUserId, amount: +amount, memo, blockNumber: +blockNumber, hash };
   }
 }
 
-module.exports = {
-  iostHelper: new IOSTHelper('http://localhost:30001')
-};
+module.exports = IOSTHelper;
