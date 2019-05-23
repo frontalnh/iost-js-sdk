@@ -19,9 +19,9 @@ const iostConfig = {
 
 class IOSTHelper {
   constructor(providerUrl) {
-    this.adminAccount = {};
-    this.adminKeyPair = {};
-    this.adminName = '';
+    this.currentAccount = {};
+    this.currentKeypair = {};
+    this.currentName = '';
     // use RPC
     this.rpc = new RPC(new HTTPProvider(providerUrl));
 
@@ -30,12 +30,6 @@ class IOSTHelper {
 
     // init rpc
     this.iost.setRPC(this.rpc);
-
-    // init admin account
-    this.initAdminAccount(
-      'admin',
-      '2yquS3ySrGWPEKywCPzX4RTJugqRh7kJSo5aehsLYPEWkUxBWA39oMrZ7ZxuM4fgyXYs2cPwh5n8aNNpH5x2VyK1'
-    );
   }
 
   /**
@@ -51,9 +45,9 @@ class IOSTHelper {
     // then create new Account transaction
     const tx = this.iost.newAccount(
       name,
-      this.adminName,
-      this.adminKeyPair.id, // creator account ownerKey
-      this.adminKeyPair.id, // creator account activeKey
+      this.currentName,
+      this.currentKeypair.id, // creator account ownerKey
+      this.currentKeypair.id, // creator account activeKey
       initialRAM,
       initialGasPledge
     );
@@ -64,12 +58,12 @@ class IOSTHelper {
   }
 
   async getChainInfo() {
-    const { head_block: headBlockNumber } = this.rpc.blockchain.getChainInfo();
+    const { head_block: headBlockNumber } = await this.rpc.blockchain.getChainInfo();
 
     return { headBlockNumber };
   }
 
-  initAdminAccount(name, priKey) {
+  setAccount(name, priKey) {
     // init admin account
     const account = new Account(name);
 
@@ -77,12 +71,11 @@ class IOSTHelper {
     const keyPair = new KeyPair(bs58.decode(priKey));
     account.addKeyPair(keyPair, 'owner');
     account.addKeyPair(keyPair, 'active');
-    account.addKeyPair(keyPair, 'general');
 
     this.iost.setAccount(account);
-    this.adminKeyPair = keyPair;
-    this.adminName = name;
-    this.adminAccount = account;
+    this.currentKeypair = keyPair;
+    this.currentName = name;
+    this.currentAccount = account;
 
     return { account, keyPair };
   }
@@ -104,7 +97,7 @@ class IOSTHelper {
     // 어프루브 반드시 해야함!!!
     tx.addApprove('iost', 1000);
 
-    this.adminAccount.signTx(tx);
+    this.currentAccount.signTx(tx);
 
     return tx;
   }
@@ -185,7 +178,7 @@ class IOSTHelper {
 
     // 어프루브 반드시 해야함!!!
     // tx.addApprove('iost', 1000);
-    this.adminAccount.sign(tx, permission);
+    this.currentAccount.sign(tx, permission);
   }
 
   async getTxByHash(hash) {

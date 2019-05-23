@@ -1,5 +1,6 @@
 const IOSTHelper = require('./iost-helper');
 const iostHelper = new IOSTHelper('http://localhost:30001');
+
 jest.setTimeout(100000);
 
 const genRandomString = len => {
@@ -25,6 +26,11 @@ describe('[IostHelper]', () => {
   const USER2_ID = genRandomString(8);
 
   beforeAll(async () => {
+    iostHelper.setAccount(
+      'admin',
+      '2yquS3ySrGWPEKywCPzX4RTJugqRh7kJSo5aehsLYPEWkUxBWA39oMrZ7ZxuM4fgyXYs2cPwh5n8aNNpH5x2VyK1'
+    );
+
     const user1Tx = await iostHelper.makeCreateAccountTx(USER1_ID, 200, 200);
     const user2Tx = await iostHelper.makeCreateAccountTx(USER2_ID, 200, 200);
 
@@ -39,6 +45,7 @@ describe('[IostHelper]', () => {
     const chainInfo = await iostHelper.getChainInfo();
     console.log(chainInfo);
   });
+
   it('make create account tx', async () => {
     iostHelper.makeCreateAccountTx('user1', 200, 200);
   });
@@ -76,13 +83,13 @@ describe('[IostHelper]', () => {
     expect(hash).toBeDefined();
   });
 
-  it.only('get block by num and get tx by hash', async () => {
+  it('get block by num and get tx by hash', async () => {
     const userId = genRandomString(10);
     const userTx = iostHelper.makeCreateAccountTx(userId, 200, 200);
     iostHelper.sign(userTx);
     await iostHelper.handle(userTx);
 
-    const transferTx = await iostHelper.makeTransferTx('admin', userId, '1000', 'test transfer');
+    const transferTx = iostHelper.makeTransferTx('admin', userId, '1000', 'test transfer');
     iostHelper.sign(transferTx);
     const transferHash = await iostHelper.handle(transferTx);
 
@@ -134,7 +141,7 @@ describe('[IostHelper]', () => {
 
   it('get block very fast', done => {
     const tasks = [];
-    for (let i = 0; i < 300; i++) {
+    for (let i = 0; i < 100; i++) {
       tasks.push(iostHelper.getBlockByNum(i));
     }
 
