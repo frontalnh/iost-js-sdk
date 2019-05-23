@@ -1,4 +1,4 @@
-const IOSTHelper = require('./iostHelper');
+const IOSTHelper = require('./iost-helper');
 const iostHelper = new IOSTHelper('http://localhost:30001');
 jest.setTimeout(100000);
 
